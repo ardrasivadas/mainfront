@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Modal, Button, Form, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import DashboardNavbar from "./DashboardNavbar";
 
@@ -57,6 +57,12 @@ const ProductList = () => {
     setBuyerInfo({ name: "", address: "", contact: "" });
   };
 
+  const handleClose = () => {
+    setSelectedProduct(null);
+    setBuyerInfo({ name: "", address: "", contact: "" });
+  };
+  
+
   return (
     <div>
       <DashboardNavbar/>
@@ -86,11 +92,21 @@ const ProductList = () => {
                 <h4>Order {selectedProduct.name}</h4>
                 <p><strong>Amount:</strong> ${selectedProduct.price}</p>
                 <form onSubmit={handleOrder}>
-                  <input type="text" className="form-control mb-2" placeholder="Name" required onChange={(e) => setBuyerInfo({ ...buyerInfo, name: e.target.value })} />
-                  <input type="text" className="form-control mb-2" placeholder="Address" required onChange={(e) => setBuyerInfo({ ...buyerInfo, address: e.target.value })} />
-                  <input type="text" className="form-control mb-2" placeholder="Contact Number" required onChange={(e) => setBuyerInfo({ ...buyerInfo, contact: e.target.value })} />
-                  <button type="submit" className="btn btn-success w-100">Place Order</button>
-                </form>
+  <input type="text" className="form-control mb-2" placeholder="Name" required 
+    onChange={(e) => setBuyerInfo({ ...buyerInfo, name: e.target.value })} />
+  
+  <input type="text" className="form-control mb-2" placeholder="Address" required 
+    onChange={(e) => setBuyerInfo({ ...buyerInfo, address: e.target.value })} />
+  
+  <input type="text" className="form-control mb-2" placeholder="Contact Number" required 
+    onChange={(e) => setBuyerInfo({ ...buyerInfo, contact: e.target.value })} />
+  
+  <div className="d-flex gap-2">
+    <button type="submit" className="btn btn-success w-100">Place Order</button>
+    <button type="button" className="btn btn-secondary w-100" onClick={handleClose}>Close</button>
+  </div>
+</form>
+
               </div>
             </div>
           </div>

@@ -770,6 +770,9 @@ const PlantShop = () => {
                 <Form.Label>Quantity</Form.Label>
                 <Form.Control type="number" min="1" defaultValue="1" />
               </Form.Group>
+              <Form.Group className="mb-3">
+  <Form.Check type="checkbox" label="Cash on Delivery" />
+</Form.Group>
             </Form>
           </Modal.Body>
           <Modal.Footer>

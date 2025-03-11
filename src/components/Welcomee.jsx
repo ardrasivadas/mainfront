@@ -30,6 +30,7 @@ const Welcome = () => {
           <Nav className="ms-auto">
             <Nav.Link as={Link} to="/signin">Sign In</Nav.Link>
             <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>
+            <Nav.Link as={Link} to="/adminlogin">ADMIN</Nav.Link>
           </Nav>
         </Container>
       </Navbar>
@@ -48,7 +49,10 @@ const Welcome = () => {
               <Button variant="light" className="m-2">Sign In</Button>
             </Link>
             <Link to="/signup">
-              <Button variant="success" className="m-2">Sign Up</Button>
+              <Button variant="primary" className="m-2">Sign Up</Button>
+            </Link>
+            <Link to="/adminlogin">
+              <Button variant="success" className="m-2">ADMIN</Button>
             </Link>
           </div>
         </Container>

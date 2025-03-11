@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Container, Card, Button, Spinner, Alert } from "react-bootstrap";
 
 const PlantIdentification = () => {
@@ -8,6 +9,7 @@ const PlantIdentification = () => {
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   // Handle Image Selection
   const handleImageChange = (event) => {
@@ -45,6 +47,14 @@ const PlantIdentification = () => {
       setLoading(false);
     }
   };
+
+  // Handle Shopping Redirection
+  const handleShopNow = () => {
+    if (prediction) {
+      navigate(`/PlantShop?q=${encodeURIComponent(prediction.plant)}`);
+    }
+  };
+  
 
   return (
     <div
@@ -99,8 +109,15 @@ const PlantIdentification = () => {
                 <p><strong>Confidence:</strong> {prediction.confidence.toFixed(2)}%</p>
               </div>
             )}
+
           </Card.Body>
         </Card>
+
+        {prediction && (
+  <Button onClick={handleShopNow} variant="success" className="mt-3 px-3 py-2" style={{ fontSize: "14px", width: "auto" }}>
+  🛒 Buy {prediction.plant}
+</Button>
+)}
       </Container>
     </div>
   );

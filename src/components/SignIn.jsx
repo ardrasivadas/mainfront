@@ -20,18 +20,17 @@ function SignIn() {
     e.preventDefault();
     setLoading(true);
     setError("");
-
+  
     try {
       const response = await fetch("http://localhost:5000/signin", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData), // ✅ Use formData
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         localStorage.setItem("token", data.token);
         navigate("/plantidentification");
@@ -43,6 +42,7 @@ function SignIn() {
     }
     setLoading(false);
   };
+  
 
   return (
     <div
@@ -117,7 +117,7 @@ function SignIn() {
                   required
                 />
               </Form.Group>
-
+              
               <Button variant="primary" type="submit" className="w-100" disabled={loading}>
                 {loading ? "Signing In..." : "Sign In"}
               </Button>

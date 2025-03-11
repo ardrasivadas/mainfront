@@ -15,6 +15,7 @@ import FloraSnap from './components/FloraSnap';
 import PlantIdentification from './components/PlantIdentification';
 import AdminDashboard from './components/AdminDashboard';
 import AdminLogin from './components/AdminLogin';
+import SignInLogs from './components/SignInLogs';
 
 
 
@@ -37,6 +38,8 @@ function App() {
       <Route path='/plantidentification'element={<PlantIdentification/>}/>
       <Route path='/adminlogin'element={<AdminLogin/>}/>
       <Route path='/admindash'element={<AdminDashboard/>}/>
+      <Route path='/sign-in-logs'element={<SignInLogs/>}/>
+
       </Routes></BrowserRouter>
     
   );

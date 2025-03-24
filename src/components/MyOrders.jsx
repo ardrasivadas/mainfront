@@ -1,70 +1,90 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
+import DashboardNavbar from "./DashboardNavbar";
 
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetchOrders();
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        if (parsedUser?.email) {
+          setUser(parsedUser);
+        } else {
+          console.warn("⚠️ User data found but missing email.");
+        }
+      } catch (error) {
+        console.error("Error parsing user from localStorage:", error);
+      }
+    } else {
+      console.warn("⚠️ No user found in localStorage.");
+    }
   }, []);
 
-  const fetchOrders = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:5000/api/orders", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  useEffect(() => {
+    if (!user || !user.email) return;
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch orders");
-      }
-
-      const data = await response.json();
-      setOrders(data);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-      setLoading(false);
-    }
-  };
+    axios
+      .get(`http://localhost:5000/myorders/${user.email}`)
+      .then((response) => {
+        console.log("Fetched Orders:", JSON.stringify(response.data, null, 2));
+        setOrders(response.data);
+      })
+      .catch((error) => console.error("Error fetching orders:", error));
+  }, [user]);
 
   return (
-    <div>
-      <h2>My Orders</h2>
-      {loading ? (
-        <p>Loading...</p>
-      ) : orders.length === 0 ? (
-        <p>No orders found.</p>
-      ) : (
-        <table border="1">
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Items</th>
-              <th>Total Amount</th>
-              <th>Placed On</th>
-            </tr>
-          </thead>
-          <tbody>
+    <>
+      <DashboardNavbar />
+      <div style={{ 
+      backgroundColor: "#FAE1DD           ",
+      minHeight: "100vh",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: "20px"
+    }}>
+      <div className="container my-4">
+        <h1 className="text-center mb-4">🛒 My Orders</h1>
+        {orders.length === 0 ? (
+          <div className="alert alert-info text-center">No orders placed yet.</div>
+        ) : (
+          <div className="row">
             {orders.map((order) => (
-              <tr key={order._id}>
-                <td>{order._id}</td>
-                <td>
-                  {order.items.map((item, index) => (
-                    <div key={index}>{item.name} (x{item.quantity})</div>
-                  ))}
-                </td>
-                <td>₹{order.totalAmount}</td>
-                <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-              </tr>
+              <div className="col-md-6 col-lg-4 mb-4" key={order._id}>
+                <div className="card shadow-sm">
+                  <div className="card-body">
+                    <h5 className="card-title">Order ID: {order._id}</h5>
+                    <p>
+                      <strong>Total Amount:</strong> ₹{order.totalAmount} <br />
+                      <strong>Date:</strong> {new Date(order.date).toLocaleString()} <br />
+                    </p>
+                    <h6>📦 Items:</h6>
+                    <ul className="list-group list-group-flush">
+                      {order.items && order.items.length > 0 ? (
+                        order.items.map((item, index) => (
+                          <li key={index} className="list-group-item">
+                            <strong>🛍 {item.name || "Unnamed Item"}</strong> <br />
+                            <small>Quantity: {item.quantity || 1} | Price: ₹{item.price || "N/A"}</small>
+                          </li>
+                        ))
+                      ) : (
+                        <li className="list-group-item text-muted">No items found in this order.</li>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+          </div>
+        )}
+      </div>
+      </div>
+    </>
   );
 };
 

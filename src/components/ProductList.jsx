@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import DashboardNavbar from "./DashboardNavbar";
+import { useCart } from "./CartContext";
 
 const products = [
   { id: 1, name: "Ceramic Plant Pot", price: 115, image: "https://exclusivelane.com/cdn/shop/products/EL-021-081_A_6a752504-c9cb-4409-9be6-cf175b4ed743_720x.jpg?v=1740398368" },
@@ -30,12 +31,17 @@ const products = [
 
 const ProductList = () => {
   const [wishlist, setWishlist] = useState([]);
+  const [cart, setCart] = useState([]);  // New state for cart
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [buyerInfo, setBuyerInfo] = useState({ name: "", address: "", contact: "" });
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const savedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
     setWishlist(savedWishlist);
+
+    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
+    setCart(savedCart);
   }, []);
 
   const addToWishlist = (product) => {
@@ -45,6 +51,22 @@ const ProductList = () => {
       localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
     }
   };
+
+  // const addToCart = (product) => {
+  //   const existingItem = cart.find((item) => item.id === product.id);
+  //   let updatedCart;
+
+  //   if (existingItem) {
+  //     updatedCart = cart.map((item) =>
+  //       item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+  //     );
+  //   } else {
+  //     updatedCart = [...cart, { ...product, quantity: 1 }];
+  //   }
+
+  //   setCart(updatedCart);
+  //   localStorage.setItem("cart", JSON.stringify(updatedCart));
+  // };
 
   const handleBuy = (product) => {
     setSelectedProduct(product);
@@ -61,11 +83,18 @@ const ProductList = () => {
     setSelectedProduct(null);
     setBuyerInfo({ name: "", address: "", contact: "" });
   };
-  
 
   return (
     <div>
-      <DashboardNavbar/>
+      <DashboardNavbar />
+      <div style={{ 
+      backgroundColor: "#FAE1DD           ",
+      minHeight: "100vh",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: "20px"
+    }}>
       <div className="container py-5">
         <h2 className="fw-bold text-light text-center py-3" style={{ backgroundColor: "#2C3E50", borderRadius: "8px" }}>
           Indoor Plant Decoration Items
@@ -74,44 +103,78 @@ const ProductList = () => {
           {products.map((product) => (
             <div key={product.id} className="col-12 col-sm-6 col-md-4">
               <div className="card shadow-sm border-0">
-                <img src={product.image} alt={product.name} className="card-img-top" style={{ height: "200px", objectFit: "contain", padding: "10px", backgroundColor: "#f8f9fa" }} />
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="card-img-top"
+                  style={{ height: "200px", objectFit: "contain", padding: "10px", backgroundColor: "#f8f9fa" }}
+                />
                 <div className="card-body text-center">
                   <h5 className="card-title">{product.name}</h5>
                   <p className="text-muted">Price: {product.price}</p>
-                  <button onClick={() => addToWishlist(product)} className="btn btn-primary w-100 mb-2">Add to Wishlist</button>
-                  <button onClick={() => handleBuy(product)} className="btn btn-warning w-100">Buy</button>
+                  <div className="d-flex flex-column">
+                  <div className="text-center">
+  <button onClick={() => addToWishlist(product)} className="btn btn-warning btn-sm w-40 mb-2">
+    Add to Wishlist
+  </button><br></br>
+  <button onClick={() => addToCart(product)} className="btn btn-success btn-sm w-40 mb-2">
+    Add to Cart
+  </button>
+  
+</div>
+
+</div>
                 </div>
               </div>
             </div>
           ))}
         </div>
+
         {selectedProduct && (
           <div className="modal show d-block" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
             <div className="modal-dialog">
               <div className="modal-content p-4">
                 <h4>Order {selectedProduct.name}</h4>
-                <p><strong>Amount:</strong> ${selectedProduct.price}</p>
+                <p>
+                  <strong>Amount:</strong> ${selectedProduct.price}
+                </p>
                 <form onSubmit={handleOrder}>
-  <input type="text" className="form-control mb-2" placeholder="Name" required 
-    onChange={(e) => setBuyerInfo({ ...buyerInfo, name: e.target.value })} />
-  
-  <input type="text" className="form-control mb-2" placeholder="Address" required 
-    onChange={(e) => setBuyerInfo({ ...buyerInfo, address: e.target.value })} />
-  
-  <input type="text" className="form-control mb-2" placeholder="Contact Number" required 
-    onChange={(e) => setBuyerInfo({ ...buyerInfo, contact: e.target.value })} />
-  
-  <div className="d-flex gap-2">
-    <button type="submit" className="btn btn-success w-100">Place Order</button>
-    <button type="button" className="btn btn-secondary w-100" onClick={handleClose}>Close</button>
-  </div>
-</form>
-
+                  <input
+                    type="text"
+                    className="form-control mb-2"
+                    placeholder="Name"
+                    required
+                    onChange={(e) => setBuyerInfo({ ...buyerInfo, name: e.target.value })}
+                  />
+                  <input
+                    type="text"
+                    className="form-control mb-2"
+                    placeholder="Address"
+                    required
+                    onChange={(e) => setBuyerInfo({ ...buyerInfo, address: e.target.value })}
+                  />
+                  <input
+                    type="text"
+                    className="form-control mb-2"
+                    placeholder="Contact Number"
+                    required
+                    onChange={(e) => setBuyerInfo({ ...buyerInfo, contact: e.target.value })}
+                  />
+                  <div className="d-flex gap-2">
+                    <button type="submit" className="btn btn-success w-100">
+                      Place Order
+                    </button>
+                    <button type="button" className="btn btn-secondary w-100" onClick={handleClose}>
+                      Close
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };

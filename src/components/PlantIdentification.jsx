@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Container, Card, Button, Spinner, Alert } from "react-bootstrap";
+import DashboardNavbar from "./DashboardNavbar";
+import ProfileModal from "./ProfileModal";
+
 
 const PlantIdentification = () => {
   const [image, setImage] = useState(null);
@@ -10,6 +13,36 @@ const PlantIdentification = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [showProfile, setShowProfile] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const response = await fetch("http://localhost:5000/user", {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          setUser(data); // Set user details
+        }
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+//   useEffect(() => {
+//     console.log("User Data:", user); // Debugging
+// }, [user]);
 
   // Handle Image Selection
   const handleImageChange = (event) => {
@@ -57,9 +90,11 @@ const PlantIdentification = () => {
   
 
   return (
+    <>
+    <DashboardNavbar /> {/* Move inside the fragment or div */}
     <div
       style={{
-        backgroundImage: "url('https://www.pixelstalk.net/wp-content/uploads/images6/Aesthetic-Wallpaper-For-Laptop-Wallpaper-High-Quality.jpg')",
+        backgroundImage: "url('https://planthouse.co.nz/cdn/shop/files/MtAlbert-SceneThumb_1024x.jpg?v=1633648021')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         height: "100vh",
@@ -69,8 +104,13 @@ const PlantIdentification = () => {
         backdropFilter: "blur(8px)",
       }}
     >
+      
       <Container className="d-flex flex-column align-items-center">
         {/* Card Container */}
+        <center style={{ backgroundColor: "#E6E6FA", padding: "10px", borderRadius: "10px" }}>
+  {user ? <h3>Welcome, {user.name}!</h3> : <h3>Loading...</h3>}
+</center>
+
         <Card className="shadow-lg p-4 text-center" style={{ width: "450px", borderRadius: "15px", backgroundColor: "rgba(255, 255, 255, 0.9)" }}>
           <Card.Body>
             <h2 className="mb-3" style={{ color: "#28a745" }}>🌿 FloraSnap</h2>
@@ -120,6 +160,7 @@ const PlantIdentification = () => {
 )}
       </Container>
     </div>
+    </>
   );
 };
 

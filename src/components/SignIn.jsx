@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect  } from "react";
 import { Form, Button, Container, Row, Col, Navbar, Nav } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom"; // ✅ Using useNavigate instead of useHistory
+import axios from "axios";
+
 
 function SignIn() {
   const navigate = useNavigate();
@@ -11,10 +13,33 @@ function SignIn() {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [cart, setCart] = useState([]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  const handleLogin = async () => {
+    try {
+        const response = await axios.post("http://localhost:5000/login", {
+            email: formData.email,
+            password: formData.password,
+        });
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userId", response.data.userId); // Store userId
+    } catch (error) {
+        console.error("Login failed", error);
+    }
+};
+
+useEffect(() => {
+  const storedCart = JSON.parse(localStorage.getItem("cart"));
+  if (storedCart) {
+      setCart(storedCart); // Restore cart state
+  }
+}, []);
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,6 +58,7 @@ function SignIn() {
   
       if (response.ok) {
         localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user)); 
         navigate("/plantidentification");
       } else {
         setError(data.message || "Invalid credentials");
@@ -74,6 +100,7 @@ function SignIn() {
           <Nav className="ms-auto">
             <Nav.Link as={Link} to="/signin">Sign In</Nav.Link>
             <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>
+            <Nav.Link as={Link} to="/adminlogin">Admin</Nav.Link>
           </Nav>
         </Container>
       </Navbar>

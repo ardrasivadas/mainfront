@@ -16,12 +16,21 @@ import PlantIdentification from './components/PlantIdentification';
 import AdminDashboard from './components/AdminDashboard';
 import AdminLogin from './components/AdminLogin';
 import SignInLogs from './components/SignInLogs';
+import Cart from './components/Cart';
+import { CartProvider } from './components/CartContext';
+import Checkout from './components/Checkout';
+import AdminOrders from './components/AdminOrders';
+import AdminHome from './components/AdminHome';
+
 
 
 
 function App() {
   return (
+    <CartProvider>
+      
     <BrowserRouter>
+    
 
     <Routes>
       
@@ -39,8 +48,17 @@ function App() {
       <Route path='/adminlogin'element={<AdminLogin/>}/>
       <Route path='/admindash'element={<AdminDashboard/>}/>
       <Route path='/sign-in-logs'element={<SignInLogs/>}/>
+      <Route path='/cart'element={<Cart/>}/>
+      <Route path='/checkout'element={<Checkout/>}/>
+      <Route path='/myorders'element={<MyOrders/>}/>
+      <Route path='/adminorders'element={<AdminOrders/>}/>
+      <Route path='/adminhome'element={<AdminHome/>}/>
 
-      </Routes></BrowserRouter>
+      </Routes>
+     
+      </BrowserRouter>
+      
+      </CartProvider>
     
   );
 }

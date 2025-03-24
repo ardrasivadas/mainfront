@@ -24,7 +24,7 @@ const Welcome = () => {
   return (
     <>
       {/* Navbar */}
-      <Navbar bg="dark" variant="dark" expand="lg">
+      {/* <Navbar bg="dark" variant="dark" expand="lg">
         <Container>
           <Navbar.Brand as={Link} to="/">FloraSnap 🌿</Navbar.Brand>
           <Nav className="ms-auto">
@@ -33,7 +33,7 @@ const Welcome = () => {
             <Nav.Link as={Link} to="/adminlogin">ADMIN</Nav.Link>
           </Nav>
         </Container>
-      </Navbar>
+      </Navbar> */}
 
       {/* Welcome Section with Background */}
       <div style={backgroundStyle}>

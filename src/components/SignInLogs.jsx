@@ -2,42 +2,60 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const SignInLogs = () => {
-    const [logs, setLogs] = useState([]);
+    const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchLogs = async () => {
-            try {
-                setLoading(true);
-                const token = localStorage.getItem('adminToken');
-        
-                if (!token) {
-                    setError("You are not logged in. Please log in as admin.");
-                    setLoading(false);
-                    return;
-                }
-        
-                // Fetch user sign-in logs instead of admin logs
-                const res = await axios.get("http://localhost:5000/sign-in-logs/users", { headers: { Authorization: `Bearer ${token}` } })
-                ;
-        
-                setLogs(res.data);
-                setError(null);
-            } catch (error) {
-                console.error("Error fetching user logs", error);
-                setError("Failed to fetch user logs. Please try again later.");
-            } finally {
-                setLoading(false);
-            }
-        };
-        
-
-        fetchLogs();
+        fetchUsers();
     }, []);
 
+    const fetchUsers = async () => {
+        try {
+            setLoading(true);
+            const token = localStorage.getItem("adminToken");
+
+            if (!token) {
+                setError("You are not logged in. Please log in as admin.");
+                setLoading(false);
+                return;
+            }
+
+            const res = await axios.get("http://localhost:5000/users", { 
+                headers: { Authorization: `Bearer ${token}` } 
+            });
+
+            setUsers(res.data);
+            setError(null);
+        } catch (err) {
+            console.error("Error fetching users:", err);
+            setError(err.response?.data?.message || "Failed to fetch users.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleRemoveUser = async (userId) => {
+        if (!window.confirm("Are you sure you want to remove this user?")) {
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem("adminToken");
+            await axios.delete(`http://localhost:5000/users/${userId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            setUsers(users.filter(user => user._id !== userId)); // Update UI
+            alert("User removed successfully!");
+        } catch (err) {
+            console.error("Error removing user:", err);
+            alert(err.response?.data?.message || "Failed to remove user.");
+        }
+    };
+
     const handleLogout = () => {
-        localStorage.removeItem('adminToken');
+        localStorage.removeItem("adminToken");
         window.location.href = "/adminlogin";
     };
 
@@ -50,15 +68,12 @@ const SignInLogs = () => {
             </div>
         );
     }
-    
+
     if (error) {
         return (
             <div className="container mt-5">
                 <div className="alert alert-danger">{error}</div>
-                <button 
-                    className="btn btn-primary" 
-                    onClick={() => window.location.href = "/adminlogin"}
-                >
+                <button className="btn btn-primary" onClick={() => window.location.href = "/adminlogin"}>
                     Go to Login
                 </button>
             </div>
@@ -66,43 +81,39 @@ const SignInLogs = () => {
     }
 
     return (
-        <div className="container-fluid mt-4">
-            <div className="row mb-4">
-                <div className="col-md-6">
-                    <h2>User Sign-in Details</h2>
-                </div>
-                <div className="col-md-6 text-md-end">
-                    <button className="btn btn-danger" onClick={handleLogout}>
-                        Logout
-                    </button>
-                </div>
+        <div className="container mt-4">
+            <div className="d-flex justify-content-between mb-4">
+                <h2>Registered Users</h2>
+                <button className="btn btn-danger" onClick={handleLogout}>Logout</button>
             </div>
-            
-            {logs.length === 0 ? (
-                <div className="alert alert-info">No sign-in logs found.</div>
+
+            {users.length === 0 ? (
+                <div className="alert alert-info">No registered users found.</div>
             ) : (
                 <div className="table-responsive">
-                    <table className="table table-striped table-bordered table-hover">
+                    <table className="table table-striped table-bordered">
                         <thead className="table-dark">
                             <tr>
                                 <th>#</th>
-                                <th>Username</th>
-                                <th>Login Time</th>
-                                <th>IP Address</th>
-                                <th>User Agent</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Location</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {logs.map((log, index) => (
-                                <tr key={log._id || index}>
+                            {users.map((user, index) => (
+                                <tr key={user._id}>
                                     <td>{index + 1}</td>
-                                    <td>{log.username}</td>
-                                    <td>{new Date(log.loginTime).toLocaleString()}</td>
-                                    <td>{log.ipAddress}</td>
+                                    <td>{user.name}</td>
+                                    <td>{user.email}</td>
+                                    <td>{user.phone}</td>
+                                    <td>{user.place}</td>
                                     <td>
-                                        <div style={{ maxWidth: "300px", overflow: "hidden", textOverflow: "ellipsis" }}>
-                                            {log.userAgent || "Not available"}
-                                        </div>
+                                        <button className="btn btn-danger" onClick={() => handleRemoveUser(user._id)}>
+                                            Remove
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

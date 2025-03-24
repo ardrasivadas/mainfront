@@ -16,7 +16,7 @@ const AdminLogin = () => {
             });
             localStorage.setItem("adminToken", res.data.token);
             alert("Login successful");
-            window.location.href = "/sign-in-logs";
+            window.location.href = "/adminhome";
         } catch (err) {
             setError("Invalid credentials");
         }

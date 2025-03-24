@@ -80,6 +80,7 @@ function SignUp() {
           <Nav className="ms-auto">
             <Nav.Link as={Link} to="/signin">Sign In</Nav.Link>
             <Nav.Link as={Link} to="/signup">Sign Up</Nav.Link>
+            <Nav.Link as={Link} to="/adminlogin">Admin</Nav.Link>
           </Nav>
         </Container>
       </Navbar>

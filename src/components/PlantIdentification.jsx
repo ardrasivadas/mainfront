@@ -92,24 +92,63 @@ const PlantIdentification = () => {
   return (
     <>
     <DashboardNavbar /> {/* Move inside the fragment or div */}
+    
+    {/* Welcome Heading at the Top */}
     <div
-      style={{
-        backgroundImage: "url('https://planthouse.co.nz/cdn/shop/files/MtAlbert-SceneThumb_1024x.jpg?v=1633648021')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        height: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        backdropFilter: "blur(8px)",
-      }}
-    >
+    style={{
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: "#FAE1DD", // Pink Background
+      padding: "20px",
+    }}
+  >
+      {/* GIFs and Content in a Row */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "20px",
+        }}
+>
+  <div
+    style={{
+      width: "400px", // Set desired width
+      height: "400px", // Set desired height
+      backgroundImage: "url('https://media1.tenor.com/m/2I6zLMb4iLwAAAAC/cute-after-effects.gif')",
+      backgroundSize: "contain",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      
+    }}
+  ></div>
+  
+  
+    
       
       <Container className="d-flex flex-column align-items-center">
         {/* Card Container */}
-        <center style={{ backgroundColor: "#E6E6FA", padding: "10px", borderRadius: "10px" }}>
-  {user ? <h3>Welcome, {user.name}!</h3> : <h3>Loading...</h3>}
-</center>
+       {/* Heading at the Top */}
+       <div
+      style={{
+        backgroundColor: "#B3E5FC", // Green Background
+        padding: "15px",
+        textAlign: "center",
+        fontSize: "24px",
+        fontWeight: "bold",
+        borderRadius: "10px",
+        width: "75%",
+        marginBottom: "20px",
+        border: "2px solid black", 
+      }}
+    >
+    {user ? `Welcome ${user.name}!` : "Loading..."}
+  </div>
+
+  
 
         <Card className="shadow-lg p-4 text-center" style={{ width: "450px", borderRadius: "15px", backgroundColor: "rgba(255, 255, 255, 0.9)" }}>
           <Card.Body>
@@ -153,13 +192,31 @@ const PlantIdentification = () => {
           </Card.Body>
         </Card>
 
+         
+
         {prediction && (
   <Button onClick={handleShopNow} variant="success" className="mt-3 px-3 py-2" style={{ fontSize: "14px", width: "auto" }}>
   🛒 Buy {prediction.plant}
 </Button>
 )}
       </Container>
+
+      {/* Right GIF */}
+      <div
+        style={{
+          width: "400px",
+          height: "400px",
+          backgroundImage: "url('https://media1.tenor.com/m/2I6zLMb4iLwAAAAC/cute-after-effects.gif')",
+          backgroundSize: "contain",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+        }}
+      ></div>
+      
+  </div>
     </div>
+    
+
     </>
   );
 };

@@ -48,8 +48,19 @@ const Cart = () => {
   return (
     <>
       <DashboardNavbar />
+      <div style={{ 
+      backgroundColor: "#FAE1DD           ",
+      minHeight: "100vh",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: "20px"
+    }}>
       <div className="container py-5">
-        <h2 className="text-center">Shopping Cart</h2>
+      <h2 className="fw-bold text-light text-center py-3" 
+            style={{ backgroundColor: "#2C3E50", borderRadius: "8px" }}>
+          SHOPPING CART
+        </h2>
         {cart.length === 0 ? (
           <p className="text-center">Your cart is empty.</p>
         ) : (
@@ -84,6 +95,7 @@ const Cart = () => {
             </div>
           </div>
         )}
+      </div>
       </div>
     </>
   );

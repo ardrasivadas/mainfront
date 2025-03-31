@@ -21,18 +21,22 @@ const Wishlist = () => {
     <>
       {/* Navbar should be placed here */}
       <DashboardNavbar />
+      <div style={{ 
+      backgroundColor: "#FAE1DD           ",
+      minHeight: "100vh",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: "20px"
+    }}>
 
       <div className="container py-5">
         <h2 className="fw-bold text-light text-center py-3" 
             style={{ backgroundColor: "#2C3E50", borderRadius: "8px" }}>
-          Your Wishlist
+          WISHLIST
         </h2>
         
-        <div className="d-flex justify-content-end mb-4">
-          <Link to="/productlist" className="btn btn-secondary">
-            Back to Shop
-          </Link>
-        </div>
+        
 
         {wishlist.length === 0 ? (
           <p className="text-muted text-center">No items in wishlist.</p>
@@ -62,6 +66,7 @@ const Wishlist = () => {
             ))}
           </div>
         )}
+      </div>
       </div>
     </>
   );

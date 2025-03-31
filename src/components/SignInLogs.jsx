@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const SignInLogs = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate(); // Hook for navigation
 
     useEffect(() => {
         fetchUsers();
@@ -84,7 +86,12 @@ const SignInLogs = () => {
         <div className="container mt-4">
             <div className="d-flex justify-content-between mb-4">
                 <h2>Registered Users</h2>
-                <button className="btn btn-danger" onClick={handleLogout}>Logout</button>
+                <div>
+                    <button className="btn btn-success me-2" onClick={() => navigate("/adminhome")}>
+                        Back
+                    </button>
+                    <button className="btn btn-danger" onClick={handleLogout}>Logout</button>
+                </div>
             </div>
 
             {users.length === 0 ? (

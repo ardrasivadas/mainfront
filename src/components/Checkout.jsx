@@ -26,10 +26,11 @@ const Checkout = () => {
         style={{ width: "400px" }}
       >
         <h1 className="mb-4 text-primary">Scan to Pay</h1>
-        <QRCodeCanvas
-          value="upi://pay?pa=your_upi_id@upi&pn=YourName&am=100&cu=INR"
-          size={250}
-        />
+<QRCodeCanvas
+  value="upi://pay?pa=ardrac15@oksbi&pn=ArdraC&cu=INR"
+  size={250}
+/>
+
         <h3 className="mt-3 text-success">Delivery within 4 days</h3>
 
         {/* Back to Cart Button */}

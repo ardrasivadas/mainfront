@@ -662,58 +662,63 @@ const plants = [
 const PlantShop = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { addToCart } = useCart();
-  // const [quantity, setQuantity] = useState(1);
   const [filteredPlants, setFilteredPlants] = useState(plants);
   const [showModal, setShowModal] = useState(false);
   const [selectedPlant, setSelectedPlant] = useState(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-const [showCartMessage, setShowCartMessage] = useState(false);
-const [wishlistMessage, setWishlistMessage] = useState("");
-const [wishlist, setWishlist] = useState([]); 
+  const [showCartMessage, setShowCartMessage] = useState(false);
+  const [wishlistMessage, setWishlistMessage] = useState("");
+  const [wishlist, setWishlist] = useState([]);
+  const [sortOption, setSortOption] = useState(""); // ✅ New state for sorting
 
-// Function to add plant to wishlist
-const addToWishlist = (plant) => {
-  let updatedWishlist = [];
+  const addToWishlist = (plant) => {
+    let updatedWishlist = [];
+    if (wishlist.some((item) => item.id === plant.id)) {
+      setWishlistMessage(`⚠️ ${plant.name} is already in your Wishlist!`);
+      return;
+    } else {
+      updatedWishlist = [...wishlist, plant];
+      setWishlist(updatedWishlist);
+      setWishlistMessage(`✅ ${plant.name} added to Wishlist!`);
+    }
+    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+    setShowSuccessMessage(true);
+    setTimeout(() => setShowSuccessMessage(false), 3000);
+  };
 
-  // Check if the plant is already in the wishlist
-  if (wishlist.some((item) => item.id === plant.id)) {
-    setWishlistMessage(`⚠️ ${plant.name} is already in your Wishlist!`);
-    return;
-  } else {
-    updatedWishlist = [...wishlist, plant];
-    setWishlist(updatedWishlist);
-    setWishlistMessage(`✅ ${plant.name} added to Wishlist!`);
-  }
+  useEffect(() => {
+    const savedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    setWishlist(savedWishlist);
+  }, []);
 
-  // Save the updated wishlist to localStorage
-  localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
-
-  setShowSuccessMessage(true);
-  setTimeout(() => setShowSuccessMessage(false), 3000);
-};
-
-// Load Wishlist from localStorage when the component mounts
-useEffect(() => {
-  const savedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-  setWishlist(savedWishlist);
-}, []);
-
-  
-
-
-const handleAddToCart = (plant) => {
-  addToCart({ ...plant, price: Number(plant.price), quantity: 1 });
-// Use context function instead of local state
-  setShowCartMessage(true);
-  setTimeout(() => setShowCartMessage(false), 2000);
-};
+  const handleAddToCart = (plant) => {
+    addToCart({ ...plant, price: Number(plant.price), quantity: 1 });
+    setShowCartMessage(true);
+    setTimeout(() => setShowCartMessage(false), 2000);
+  };
 
   const handleSearch = () => {
-    const filtered = plants.filter((plant) =>
-      plant.name.toLowerCase().includes(searchTerm.toLowerCase())
+    applyFilters(searchTerm, sortOption);
+  };
+
+  const applyFilters = (search, sort) => {
+    let updatedPlants = [...plants];
+
+    if (sort === "lowToHigh") {
+      updatedPlants.sort((a, b) => Number(a.price) - Number(b.price));
+    } else if (sort === "highToLow") {
+      updatedPlants.sort((a, b) => Number(b.price) - Number(a.price));
+    }
+
+    const filtered = updatedPlants.filter((plant) =>
+      plant.name.toLowerCase().includes(search.toLowerCase())
     );
     setFilteredPlants(filtered);
   };
+
+  useEffect(() => {
+    applyFilters(searchTerm, sortOption);
+  }, [sortOption, searchTerm]);
 
   const handleBuyNow = (plant) => {
     setSelectedPlant(plant);
@@ -728,180 +733,121 @@ const handleAddToCart = (plant) => {
   const handleConfirmPurchase = () => {
     setShowModal(false);
     setShowSuccessMessage(true);
-    
     setTimeout(() => {
       setShowSuccessMessage(false);
     }, 3000);
   };
-  console.log("Wishlist items:", wishlist);
-  useEffect(() => {
-    console.log("Updated Wishlist:", wishlist);
-  }, [wishlist]);
-  
-
 
   return (
     <>
-      {/* Navbar */}
-      <DashboardNavbar /> 
-      <div style={{ 
-      backgroundColor: "#FAE1DD           ",
-      minHeight: "100vh",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      padding: "20px"
-    }}>
+      <DashboardNavbar />
+      <div style={{
+        backgroundColor: "#FAE1DD",
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "20px"
+      }}>
+        <Container className="text-center mt-5">
 
-      {/* Main Content */}
-      <Container className="text-center mt-5">
-        
+          {/* Search + Sort UI */}
+          <div className="d-flex justify-content-center mb-4">
+            <Form.Control
+              type="text"
+              placeholder="Search plants..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{ maxWidth: "300px", marginRight: "10px" }}
+            />
+            <Button variant="primary" onClick={handleSearch}>Search</Button>
 
-        <div className="d-flex justify-content-center mb-4">
-          <Form.Control
-            type="text"
-            placeholder="Search plants..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ maxWidth: "300px", marginRight: "10px" }}
-          />
-          <Button variant="primary" onClick={handleSearch}>Search</Button>
-        </div><br></br>
+            <Form.Select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              style={{ maxWidth: "200px", marginLeft: "10px" }}
+            >
+              <option value="">Select</option>
+              <option value="lowToHigh">Price: Low to High</option>
+              <option value="highToLow">Price: High to Low</option>
+            </Form.Select>
+          </div>
 
-        <Row className="g-4">
-          {filteredPlants.map((plant) => (
-            <Col key={plant.id} md={3} sm={6}>
-              <Card className="h-100 shadow-sm">
-                <Card.Img
-                  variant="top"
-                  src={plant.image}
-                  style={{ width: "100%", height: "250px", objectFit: "cover" }}
-                />
-                <Card.Body>
-  <Card.Title>{plant.name}</Card.Title>
-  <Card.Subtitle className="text-muted"><i>{plant.scientificName}</i></Card.Subtitle> {/* Added scientific name */}
-  <br></br>
-  {/* <Form.Control 
-        type="number" 
-        min="1" 
-        value={quantity} 
-        onChange={(e) => setQuantity(Number(e.target.value))}
-        style={{ width: "60px", display: "inline-block", marginRight: "10px" }}
-      /> */}
-  <Card.Text><strong>{plant.price}</strong></Card.Text>
-  {/* <Button variant="success" onClick={() => handleBuyNow(plant)}>Buy Now</Button> */}
-  <button onClick={() => addToWishlist(plant)} className="btn btn-primary">
-      Add to Wishlist
-    </button>
-<Button variant="warning" className="ms-2" onClick={() => handleAddToCart(plant)}>Add to Cart</Button>
-<br></br>
-<br/>
+          {/* Plant Cards */}
+          <Row className="g-4">
+            {filteredPlants.map((plant) => (
+              <Col key={plant.id} md={3} sm={6}>
+                <Card className="h-100 shadow-sm">
+                  <Card.Img
+                    variant="top"
+                    src={plant.image}
+                    style={{ width: "100%", height: "250px", objectFit: "cover" }}
+                  />
+                  <Card.Body>
+                    <Card.Title>{plant.name}</Card.Title>
+                    <Card.Subtitle className="text-muted"><i>{plant.scientificName}</i></Card.Subtitle>
+                    <Card.Text><strong>{plant.price}</strong></Card.Text>
 
+                    <button onClick={() => addToWishlist(plant)} className="btn btn-primary">
+                      Add to Wishlist
+                    </button>
+                    <Button variant="warning" className="ms-2" onClick={() => handleAddToCart(plant)}>Add to Cart</Button>
 
-  {/* Care Details */}
-  <details>
-    <summary style={{ cursor: "pointer", color: "green", fontWeight: "bold" }}>Care Instructions</summary>
-    <ul style={{ textAlign: "left", paddingLeft: "15px" }}>
-      <li><strong>Sunlight:</strong> {plant.care.sunlight}</li>
-      <li><strong>Watering:</strong> {plant.care.watering}</li>
-      <li><strong>Soil:</strong> {plant.care.soil}</li>
-      <li><strong>Temperature:</strong> {plant.care.temperature}</li>
-    </ul>
-  </details>
+                    <details className="mt-3">
+                      <summary style={{ cursor: "pointer", color: "green", fontWeight: "bold" }}>Care Instructions</summary>
+                      <ul style={{ textAlign: "left", paddingLeft: "15px" }}>
+                        <li><strong>Sunlight:</strong> {plant.care.sunlight}</li>
+                        <li><strong>Watering:</strong> {plant.care.watering}</li>
+                        <li><strong>Soil:</strong> {plant.care.soil}</li>
+                        <li><strong>Temperature:</strong> {plant.care.temperature}</li>
+                      </ul>
+                    </details>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
 
-  <br></br>
+          {/* Toast: Added to Cart */}
+          <Toast
+            show={showCartMessage}
+            onClose={() => setShowCartMessage(false)}
+            delay={2000}
+            autohide
+            style={{
+              position: "fixed",
+              bottom: "70px",
+              right: "20px",
+              backgroundColor: "#ffc107",
+              color: "black",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
+          >
+            <Toast.Body>🛒 Added to Cart!</Toast.Body>
+          </Toast>
 
-  {/* <Button variant="success" onClick={() => handleBuyNow(plant)}>Buy Now</Button> */}
-</Card.Body>
-
-              </Card>
-            </Col>
-          ))}
-        </Row>
-
-        <Toast
-  show={showCartMessage}
-  onClose={() => setShowCartMessage(false)}
-  delay={2000}
-  autohide
-  style={{
-    position: "fixed",
-    bottom: "70px",
-    right: "20px",
-    backgroundColor: "#ffc107",
-    color: "black",
-    padding: "10px",
-    borderRadius: "5px",
-  }}
->
-  <Toast.Body>🛒 Added to Cart!</Toast.Body>
-</Toast>
-
-
-        {/* Modal Form
-        <Modal show={showModal} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Purchase {selectedPlant?.name}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              <Form.Group className="mb-3">
-                <Form.Label>Name</Form.Label>
-                <Form.Control type="text" placeholder="Enter your name" />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Email</Form.Label>
-                <Form.Control type="email" placeholder="Enter your email" />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Address</Form.Label>
-                <Form.Control type="text" placeholder="Enter your address" />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Quantity</Form.Label>
-                <Form.Control type="number" min="1" defaultValue="1" />
-              </Form.Group>
-              <Form.Group className="mb-3">
-  <Form.Check type="checkbox" label="Cash on Delivery" />
-</Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>Close</Button>
-            <Button variant="success" onClick={handleConfirmPurchase}>Confirm Purchase</Button>
-          </Modal.Footer>
-        </Modal> */}
-
-{/* <ul>
-        {wishlist.length > 0 ? (
-          wishlist.map((item) => <li key={item.id}>{item.name}</li>)
-        ) : (
-          <p>No items in wishlist</p>
-        )}
-      </ul> */}
-
-        {/* Success Toast Notification */}
-      <Toast
-        show={showSuccessMessage}
-        onClose={() => setShowSuccessMessage(false)}
-        delay={3000}
-        autohide
-        style={{
-          position: "fixed",
-          bottom: "20px",
-          right: "20px",
-          backgroundColor: "#28a745",
-          color: "white",
-          padding: "10px",
-          borderRadius: "5px",
-        }}
-      >
-        <Toast.Body>🛒 Added to wishlist</Toast.Body>
-      </Toast>
-      </Container>
+          {/* Toast: Wishlist */}
+          <Toast
+            show={showSuccessMessage}
+            onClose={() => setShowSuccessMessage(false)}
+            delay={3000}
+            autohide
+            style={{
+              position: "fixed",
+              bottom: "20px",
+              right: "20px",
+              backgroundColor: "#28a745",
+              color: "white",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
+          >
+            <Toast.Body>🛒 Added to wishlist</Toast.Body>
+          </Toast>
+        </Container>
       </div>
     </>
-    
   );
 };
 

@@ -27,7 +27,6 @@ const DashboardNavbar = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
             {[
-              { path: "/", label: "Home" },
               { path: "/plantidentification", label: "Plant Identification" },
               { path: "/plantshop", label: "Plants" },
               { path: "/productlist", label: "Products" },

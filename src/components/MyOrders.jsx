@@ -70,82 +70,98 @@ const MyOrders = () => {
   }));
 
   return (
-    <>
-      <DashboardNavbar />
-      <div
-  style={{
-    background: "linear-gradient(to right, #fdfbfb, #ebedee)", // gradient added
-    minHeight: "100vh",
-    padding: "20px",
-  }}
->
+  <>
+    <DashboardNavbar />
+    <div
+      style={{
+        background: "#f5f5f5",
+        minHeight: "100vh",
+        padding: "20px",
+      }}
+    >
+      {/* Header Section */}
+      <div className="text-center py-4" style={{
+        backgroundColor: "#4CAF50",
+        color: "white",
+        borderRadius: "20px",
+        marginBottom: "30px",
+        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+      }}>
+        <h1 style={{ fontWeight: 'bold' }}>
+          FloraSnap 🌿 — Discover, Shop, and Care for Your Indoor Plants
+        </h1>
+      </div>
 
-        <div className="container my-4">
-          <h1 className="text-center mb-4">🛒 My Orders</h1>
+      {/* Search + Sort */}
+      <div className="d-flex justify-content-center mb-4 flex-wrap gap-2">
+        
+        <select
+          className="form-select w-auto"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          <option value="all">All Time</option>
+          <option value="weekly">This Week</option>
+          <option value="monthly">This Month</option>
+          <option value="yearly">This Year</option>
+        </select>
+      </div>
 
-          <div className="text-center mb-4">
-            <select
-              className="form-select w-auto mx-auto"
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-            >
-              <option value="all">All Time</option>
-              <option value="weekly">This Week</option>
-              <option value="monthly">This Month</option>
-              <option value="yearly">This Year</option>
-            </select>
+      {/* Bar Chart Section */}
+      <div className="mb-5">
+        <h5 className="text-center">📊 Order Amount Trend</h5>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={graphData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Bar dataKey="amount" fill="#2C3E50" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Order Cards */}
+      <div className="container">
+        {filteredOrders.length === 0 ? (
+          <div className="alert alert-info text-center">
+            No orders found for selected range.
           </div>
-
-          {/* Bar Chart */}
-          <div className="mb-5">
-            <h5 className="text-center">📊 Order Amount Trend</h5>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={graphData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="amount" fill="#2C3E50" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          {filteredOrders.length === 0 ? (
-            <div className="alert alert-info text-center">No orders found for selected range.</div>
-          ) : (
-            <div className="row">
-              {filteredOrders.map((order) => (
-                <div className="col-md-6 col-lg-4 mb-4" key={order._id}>
-                  <div className="card shadow-sm">
-                    <div className="card-body">
-                      <h5 className="card-title">Order ID: {order._id}</h5>
-                      <p>
-                        <strong>Total Amount:</strong> ₹{order.totalAmount} <br />
-                        <strong>Date:</strong> {new Date(order.date).toLocaleString()} <br />
-                      </p>
-                      <h6>📦 Items:</h6>
-                      <ul className="list-group list-group-flush">
-                        {order.items && order.items.length > 0 ? (
-                          order.items.map((item, idx) => (
-                            <li key={idx} className="list-group-item">
-                              <strong>🛍 {item.name}</strong> <br />
-                              <small>Qty: {item.quantity || 1} | ₹{item.price}</small>
-                            </li>
-                          ))
-                        ) : (
-                          <li className="list-group-item text-muted">No items found.</li>
-                        )}
-                      </ul>
-                    </div>
+        ) : (
+          <div className="row">
+            {filteredOrders.map((order) => (
+              <div className="col-md-6 col-lg-4 mb-4" key={order._id}>
+                <div className="card h-100 shadow-sm border-0 rounded-4">
+                  <div className="card-body">
+                    <h5 className="card-title">Order ID: {order._id}</h5>
+                    <p className="mb-2">
+                      <strong>Total Amount:</strong> ₹{order.totalAmount} <br />
+                      <strong>Date:</strong> {new Date(order.date).toLocaleString()} <br />
+                    </p>
+                    <h6 className="mb-2">📦 Items:</h6>
+                    <ul className="list-group list-group-flush">
+                      {order.items?.length > 0 ? (
+                        order.items.map((item, idx) => (
+                          <li key={idx} className="list-group-item">
+                            <strong>🛍 {item.name}</strong> <br />
+                            <small>Qty: {item.quantity || 1} | ₹{item.price}</small>
+                          </li>
+                        ))
+                      ) : (
+                        <li className="list-group-item text-muted">No items found.</li>
+                      )}
+                    </ul>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-    </>
-  );
+    </div>
+  </>
+);
+
 };
 
 export default MyOrders;

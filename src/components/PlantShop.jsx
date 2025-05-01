@@ -742,32 +742,71 @@ const PlantShop = () => {
     <>
       <DashboardNavbar />
       <div style={{
-        backgroundColor: "#FAE1DD",
+        backgroundColor: "#F5F5F5", // Subtle light background
         minHeight: "100vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        padding: "20px"
+        padding: "20px",
+        fontFamily: 'Roboto, sans-serif' // Clean font for readability
       }}>
         <Container className="text-center mt-5">
 
+          {/* Header */}
+          <div style={{
+            backgroundColor: "#4CAF50", // Earthy green for nature
+            padding: "30px",
+            color: "white",
+            fontSize: "36px",
+            fontWeight: "700",
+            borderRadius: "15px",
+            boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
+            letterSpacing: "2px"
+          }}>
+            FloraSnap 🌿 — Discover, Shop, and Care for Your Indoor Plants
+          </div>
+
           {/* Search + Sort UI */}
-          <div className="d-flex justify-content-center mb-4">
+          <div className="d-flex justify-content-center mb-4 mt-4">
             <Form.Control
               type="text"
               placeholder="Search plants..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ maxWidth: "300px", marginRight: "10px" }}
+              style={{
+                maxWidth: "350px", 
+                marginRight: "15px", 
+                borderRadius: "25px", 
+                boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
+                padding: "15px",
+                fontSize: "16px"
+              }}
             />
-            <Button variant="primary" onClick={handleSearch}>Search</Button>
+            <Button 
+              variant="success" 
+              onClick={handleSearch} 
+              style={{ 
+                borderRadius: "25px", 
+                padding: "10px 25px", 
+                fontSize: "16px", 
+                fontWeight: "bold" 
+              }}
+            >
+              Search
+            </Button>
 
             <Form.Select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              style={{ maxWidth: "200px", marginLeft: "10px" }}
+              style={{
+                maxWidth: "220px", 
+                marginLeft: "15px", 
+                borderRadius: "25px", 
+                boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
+                fontSize: "16px"
+              }}
             >
-              <option value="">Select</option>
+              <option value="">Sort By</option>
               <option value="lowToHigh">Price: Low to High</option>
               <option value="highToLow">Price: High to Low</option>
             </Form.Select>
@@ -776,25 +815,74 @@ const PlantShop = () => {
           {/* Plant Cards */}
           <Row className="g-4">
             {filteredPlants.map((plant) => (
-              <Col key={plant.id} md={3} sm={6}>
-                <Card className="h-100 shadow-sm">
+              <Col key={plant.id} md={4} sm={6}>
+                <Card 
+                  className="h-100 shadow-lg" 
+                  style={{
+                    borderRadius: "20px", 
+                    transition: "transform 0.3s ease-in-out", 
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.1)", 
+                    backgroundColor: "#fff"
+                  }} 
+                  onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.05)"} 
+                  onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
+                >
                   <Card.Img
                     variant="top"
                     src={plant.image}
-                    style={{ width: "100%", height: "250px", objectFit: "cover" }}
+                    style={{
+                      width: "100%", 
+                      height: "300px", 
+                      objectFit: "cover", 
+                      borderTopLeftRadius: "20px", 
+                      borderTopRightRadius: "20px"
+                    }}
                   />
                   <Card.Body>
-                    <Card.Title>{plant.name}</Card.Title>
-                    <Card.Subtitle className="text-muted"><i>{plant.scientificName}</i></Card.Subtitle>
-                    <Card.Text><strong>{plant.price}</strong></Card.Text>
+                    <Card.Title style={{ fontSize: "20px", fontWeight: "600", color: "#333" }}>{plant.name}</Card.Title>
+                    <Card.Subtitle className="text-muted" style={{ fontSize: "14px", fontStyle: "italic" }}>{plant.scientificName}</Card.Subtitle>
+                    <Card.Text style={{ fontSize: "18px", fontWeight: "500", margin: "10px 0" }}>
+                      <strong>{plant.price}</strong>
+                    </Card.Text>
 
-                    <button onClick={() => addToWishlist(plant)} className="btn btn-primary">
-                      Add to Wishlist
-                    </button>
-                    <Button variant="warning" className="ms-2" onClick={() => handleAddToCart(plant)}>Add to Cart</Button>
+                    <div className="d-flex justify-content-center mt-3">
+                      <button 
+                        onClick={() => addToWishlist(plant)} 
+                        className="btn btn-outline-success" 
+                        style={{ 
+                          borderRadius: "30px", 
+                          padding: "8px 20px", 
+                          fontWeight: "500", 
+                          marginRight: "15px", 
+                          border: "2px solid #28a745" 
+                        }}
+                      >
+                        Add to Wishlist
+                      </button>
+                      <Button 
+                        variant="success" 
+                        className="ms-2" 
+                        onClick={() => handleAddToCart(plant)} 
+                        style={{
+                          borderRadius: "30px", 
+                          padding: "8px 20px", 
+                          fontWeight: "500"
+                        }}
+                      >
+                        Add to Cart
+                      </Button>
+                    </div>
 
+                    {/* Care Instructions Section */}
                     <details className="mt-3">
-                      <summary style={{ cursor: "pointer", color: "green", fontWeight: "bold" }}>Care Instructions</summary>
+                      <summary style={{
+                        cursor: "pointer", 
+                        color: "#4CAF50", 
+                        fontWeight: "bold", 
+                        fontSize: "16px"
+                      }}>
+                        Care Instructions
+                      </summary>
                       <ul style={{ textAlign: "left", paddingLeft: "15px" }}>
                         <li><strong>Sunlight:</strong> {plant.care.sunlight}</li>
                         <li><strong>Watering:</strong> {plant.care.watering}</li>
@@ -818,10 +906,12 @@ const PlantShop = () => {
               position: "fixed",
               bottom: "70px",
               right: "20px",
-              backgroundColor: "#ffc107",
-              color: "black",
-              padding: "10px",
-              borderRadius: "5px",
+              backgroundColor: "#ff9800",
+              color: "#333",
+              padding: "15px",
+              borderRadius: "10px",
+              fontSize: "16px",
+              fontWeight: "500"
             }}
           >
             <Toast.Body>🛒 Added to Cart!</Toast.Body>
@@ -839,16 +929,20 @@ const PlantShop = () => {
               right: "20px",
               backgroundColor: "#28a745",
               color: "white",
-              padding: "10px",
-              borderRadius: "5px",
+              padding: "15px",
+              borderRadius: "10px",
+              fontSize: "16px",
+              fontWeight: "500"
             }}
           >
-            <Toast.Body>🛒 Added to wishlist</Toast.Body>
+            <Toast.Body>🌱 Added to wishlist!</Toast.Body>
           </Toast>
+
         </Container>
       </div>
     </>
   );
+  
 };
 
 export default PlantShop;

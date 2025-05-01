@@ -9,48 +9,64 @@ const handleLogout = () => {
 
 const DashboardNavbar = () => {
   return (
-    <Navbar style={{ backgroundColor: "#333333" }} variant="dark" expand="lg" className="w-100">
+    <Navbar expand="lg" className="w-100" style={{
+      backgroundColor: '#e8f5e9', // Soft pastel green
+      padding: '12px 20px',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.06)',
+      borderBottom: '1px solid #c8e6c9'
+    }}>
+      <Container fluid>
+        <Navbar.Brand as={Link} to="/" style={{
+          fontSize: '1.5rem',
+          fontWeight: 'bold',
+          color: '#2e7d32' // Deep green for brand
+        }}>
+          FloraSnap
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="ms-auto">
+            {[
+              { path: "/", label: "Home" },
+              { path: "/plantidentification", label: "Plant Identification" },
+              { path: "/plantshop", label: "Plants" },
+              { path: "/productlist", label: "Products" },
+              { path: "/wishlist", label: "Wishlist" },
+              { path: "/cart", label: "Cart" },
+              { path: "/myorders", label: "Orders" },
+            ].map(link => (
+              <Nav.Link
+                key={link.path}
+                as={Link}
+                to={link.path}
+                style={{ color: '#388e3c', fontWeight: '500', marginRight: '12px' }}
+              >
+                {link.label}
+              </Nav.Link>
+            ))}
 
-
-
-
-
-
-
-  <Container fluid>
-    <Navbar.Brand as={Link} to="/">FloraSnap</Navbar.Brand>
-    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-    <Navbar.Collapse id="basic-navbar-nav">
-      <Nav className="ms-auto">
-        <Nav.Link as={Link} to="/">Home</Nav.Link>
-        <Nav.Link as={Link} to="/plantidentification">Plant Identification</Nav.Link>
-        <Nav.Link as={Link} to="/plantshop">Plants</Nav.Link>
-        <Nav.Link as={Link} to="/productlist">Products</Nav.Link>
-        <Nav.Link as={Link} to="/wishlist">Wishlist</Nav.Link>
-        <Nav.Link as={Link} to="/cart">Cart</Nav.Link>
-        <Nav.Link as={Link} to="/myorders">Orders</Nav.Link>
-        {/* Logout Button */}
-        <button
-            onClick={handleLogout} // Add your logout function here
-            style={{
-                backgroundColor: "red",
+            <button
+              onClick={handleLogout}
+              style={{
+                backgroundColor: "#66bb6a",
                 color: "white",
                 border: "none",
                 padding: "8px 15px",
                 borderRadius: "5px",
                 cursor: "pointer",
                 fontSize: "1rem",
-            }}
-        >
-            Logout
-        </button>
-        
-      </Nav>
-    </Navbar.Collapse>
-  </Container>
-</Navbar>
-
-
+                marginLeft: '12px',
+                transition: "background-color 0.3s ease"
+              }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = "#558b2f"}
+              onMouseLeave={(e) => e.target.style.backgroundColor = "#66bb6a"}
+            >
+              Logout
+            </button>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 };
 

@@ -47,20 +47,32 @@ const Cart = () => {
 
   return (
     <>
-      <DashboardNavbar />
-      <div style={{ 
-      backgroundColor: "#FAE1DD           ",
-      minHeight: "100vh",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      padding: "20px"
+     <DashboardNavbar />
+<div style={{ 
+  backgroundColor: "#F5F5F5",
+  minHeight: "100vh",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  padding: "20px",
+  fontFamily: 'Roboto, sans-serif'
+}}>
+  <div className="container py-5">
+    {/* Header */}
+    <div style={{
+      backgroundColor: "#4CAF50", // Subtle pastel green
+      padding: "25px",
+      color: "white",           // Deep green text for contrast
+      fontSize: "32px",
+      fontWeight: "bold",
+      borderRadius: "15px",
+      boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+      textAlign: "center"
     }}>
-      <div className="container py-5">
-      <h2 className="fw-bold text-light text-center py-3" 
-            style={{ backgroundColor: "#2C3E50", borderRadius: "8px" }}>
-          SHOPPING CART
-        </h2>
+      Shopping Cart
+    </div>
+
+          <br></br>
         {cart.length === 0 ? (
           <p className="text-center">Your cart is empty.</p>
         ) : (

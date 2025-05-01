@@ -37,6 +37,7 @@ const ProductList = () => {
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [sortOption, setSortOption] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { addToCart } = useCart();
 
@@ -90,21 +91,41 @@ const ProductList = () => {
     <div>
       <DashboardNavbar />
       <div style={{
-        backgroundColor: "#FAE1DD",
+        backgroundColor: "#F5F5F5",
         minHeight: "100vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        padding: "20px"
+        padding: "20px",
+        fontFamily: 'Roboto, sans-serif'
       }}>
         <div className="container py-5">
-          <h2 className="fw-bold text-light text-center py-3" style={{ backgroundColor: "#2C3E50", borderRadius: "8px" }}>
-            Indoor Plant Decoration Items
-          </h2>
-
+          {/* Header */}
+          <div style={{
+            backgroundColor: "#4CAF50",
+            padding: "30px",
+            color: "white",
+            fontSize: "36px",
+            fontWeight: "bold",
+            borderRadius: "15px",
+            boxShadow: "0 2px 10px rgba(0,0,0,0.1)"
+          }}>
+            FloraSnap 🌿 — Discover, Shop, and Care for Your Indoor Plants
+          </div>
+          <br></br>
+  
           {/* Filters */}
           <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
-            <select className="form-select w-auto me-2" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+            <select
+              className="form-select w-auto me-2 shadow-sm border-0"
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              style={{
+                backgroundColor: "#fff",
+                padding: "10px",
+                borderRadius: "10px",
+                boxShadow: "0 2px 5px rgba(0,0,0,0.1)"
+              }}>
               <option value="All">All Categories</option>
               <option value="Fertilizers">Fertilizers</option>
               <option value="Pots">Pots</option>
@@ -112,34 +133,66 @@ const ProductList = () => {
               <option value="Decor">Decor</option>
               <option value="Others">Others</option>
             </select>
-
-            <select className="form-select w-auto" value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
-              <option value="">Select</option>
+  
+            <select
+              className="form-select w-auto shadow-sm border-0"
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              style={{
+                backgroundColor: "#fff",
+                padding: "10px",
+                borderRadius: "10px",
+                boxShadow: "0 2px 5px rgba(0,0,0,0.1)"
+              }}>
+              <option value="">Price</option>
               <option value="lowToHigh">Price: Low to High</option>
               <option value="highToLow">Price: High to Low</option>
             </select>
           </div>
-
+  
           {/* Products Grid */}
           <div className="row g-4">
             {filteredProducts.map((product) => (
               <div key={product.id} className="col-12 col-sm-6 col-md-4">
-                <div className="card shadow-sm border-0">
+                <div className="card shadow-sm border-0" style={{
+                  borderRadius: "15px",
+                  transition: "transform 0.3s",
+                  boxShadow: "0 5px 15px rgba(0,0,0,0.1)"
+                }} onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.05)"} onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}>
                   <img
                     src={product.image}
                     alt={product.name}
                     className="card-img-top"
-                    style={{ height: "200px", objectFit: "contain", padding: "10px", backgroundColor: "#f8f9fa" }}
+                    style={{
+                      height: "200px",
+                      objectFit: "contain",
+                      padding: "10px",
+                      backgroundColor: "#f8f9fa",
+                      borderRadius: "15px"
+                    }}
                   />
-                  <div className="card-body text-center">
-                    <h5 className="card-title">{product.name}</h5>
+                  <div className="card-body text-center" style={{
+                    padding: "20px",
+                    backgroundColor: "#fff",
+                    borderRadius: "15px"
+                  }}>
+                    <h5 className="card-title" style={{ fontSize: "1.1rem", fontWeight: "600" }}>
+                      {product.name}
+                    </h5>
                     <p className="text-muted">Price: ₹{product.price}</p>
-                    <div className="text-center">
-                      <button onClick={() => addToWishlist(product)} className="btn btn-warning btn-sm mb-2 w-75">
+                    <div className="d-flex justify-content-center gap-3">
+                      <button
+                        onClick={() => addToWishlist(product)}
+                        className="btn btn-success btn-sm w-75 py-2 shadow-sm"
+                        style={{ borderRadius: "10px", transition: "transform 0.3s" }}
+                      >
                         Add to Wishlist
                       </button>
-                      <br />
-                      <button onClick={() => addToCart(product)} className="btn btn-success btn-sm w-75">
+                      <button
+                        onClick={() => addToCart(product)}
+                        className="btn btn-success btn-sm w-75 py-2 shadow-sm"
+                        style={{ borderRadius: "10px", transition: "transform 0.3s" }}
+                      >
                         Add to Cart
                       </button>
                     </div>
@@ -148,35 +201,63 @@ const ProductList = () => {
               </div>
             ))}
           </div>
-
-          {/* Modal */}
+  
+          {/* Modal for Order */}
           {selectedProduct && (
             <div className="modal show d-block" style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
               <div className="modal-dialog">
-                <div className="modal-content p-4">
+                <div className="modal-content p-4" style={{
+                  backgroundColor: "#fff",
+                  borderRadius: "10px",
+                  boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.1)"
+                }}>
                   <h4>Order {selectedProduct.name}</h4>
                   <p><strong>Amount:</strong> ₹{selectedProduct.price}</p>
                   <form onSubmit={handleOrder}>
-                    <input type="text" className="form-control mb-2" placeholder="Name" required
-                      onChange={(e) => setBuyerInfo({ ...buyerInfo, name: e.target.value })} />
-                    <input type="text" className="form-control mb-2" placeholder="Address" required
-                      onChange={(e) => setBuyerInfo({ ...buyerInfo, address: e.target.value })} />
-                    <input type="text" className="form-control mb-2" placeholder="Contact Number" required
-                      onChange={(e) => setBuyerInfo({ ...buyerInfo, contact: e.target.value })} />
-                    <div className="d-flex gap-2">
-                      <button type="submit" className="btn btn-success w-100">Place Order</button>
-                      <button type="button" className="btn btn-secondary w-100" onClick={handleClose}>Close</button>
+                    <input
+                      type="text"
+                      className="form-control mb-2"
+                      placeholder="Name"
+                      required
+                      onChange={(e) => setBuyerInfo({ ...buyerInfo, name: e.target.value })}
+                      style={{ borderRadius: "10px" }}
+                    />
+                    <input
+                      type="text"
+                      className="form-control mb-2"
+                      placeholder="Address"
+                      required
+                      onChange={(e) => setBuyerInfo({ ...buyerInfo, address: e.target.value })}
+                      style={{ borderRadius: "10px" }}
+                    />
+                    <input
+                      type="text"
+                      className="form-control mb-2"
+                      placeholder="Contact Number"
+                      required
+                      onChange={(e) => setBuyerInfo({ ...buyerInfo, contact: e.target.value })}
+                      style={{ borderRadius: "10px" }}
+                    />
+                    <div className="d-flex gap-3">
+                      <button type="submit" className="btn btn-success w-100 py-2" style={{
+                        borderRadius: "10px", transition: "background-color 0.3s ease"
+                      }}>Place Order</button>
+                      <button type="button" className="btn btn-secondary w-100 py-2" onClick={handleClose} style={{
+                        borderRadius: "10px", transition: "background-color 0.3s ease"
+                      }}>Close</button>
                     </div>
                   </form>
                 </div>
               </div>
             </div>
           )}
-
         </div>
       </div>
     </div>
   );
+  
+  
+  
 };
 
 export default ProductList;

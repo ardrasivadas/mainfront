@@ -86,7 +86,7 @@ useEffect(() => {
     >
       {/* Navbar - Positioned at the top */}
       <Navbar
-        bg="dark"
+        bg="success"
         variant="dark"
         expand="lg"
         style={{

@@ -41,7 +41,7 @@ const AdminLogin = () => {
 
             {/* Navbar - Positioned at the top */}
             <Navbar
-                bg="dark"
+                bg="success"
                 variant="dark"
                 expand="lg"
                 style={{ position: "absolute", top: 0, width: "100%" }}

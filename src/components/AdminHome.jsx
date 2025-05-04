@@ -68,7 +68,7 @@ const AdminHome = () => {
       onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
     >
       <h5>Total Users</h5>
-      <p className="fs-4">1,254</p>
+      <p className="fs-4">154</p>
       <p className="mb-0 small">Stay updated on the number of registered users in the system.</p>
     </div>
   </div>
@@ -87,7 +87,7 @@ const AdminHome = () => {
       onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
     >
       <h5>Orders Processed</h5>
-      <p className="fs-4">538</p>
+      <p className="fs-4">138</p>
       <p className="mb-0 small">Track all orders.</p>
     </div>
   </div>
